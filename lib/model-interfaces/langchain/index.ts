@@ -122,6 +122,37 @@ export class LangChainInterface extends Construct {
         props.config.bedrock.guardrails.version
       );
     }
+    
+    // Add Bedrock agent environment variables if enabled
+    if (props.config.bedrock?.agent?.enabled) {
+      requestHandler.addEnvironment(
+        "BEDROCK_AGENT_ID",
+        props.config.bedrock.agent.agentId
+      );
+      requestHandler.addEnvironment(
+        "BEDROCK_AGENT_VERSION",
+        props.config.bedrock.agent.agentVersion
+      );
+      
+      // Add agent alias ID if available
+      if (props.config.bedrock.agent.agentAliasId) {
+        requestHandler.addEnvironment(
+          "BEDROCK_AGENT_ALIAS_ID",
+          props.config.bedrock.agent.agentAliasId
+        );
+      }
+      
+      // Add permissions to invoke Bedrock agent
+      requestHandler.addToRolePolicy(
+        new iam.PolicyStatement({
+          actions: [
+            "bedrock:InvokeAgent",
+            "bedrock:InvokeAgentAlias",
+          ],
+          resources: ["*"],
+        })
+      );
+    }
 
     if (props.ragEngines?.auroraPgVector) {
       props.ragEngines.auroraPgVector.database.grantConnect(
