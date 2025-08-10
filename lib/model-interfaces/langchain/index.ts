@@ -110,6 +110,12 @@ export class LangChainInterface extends Construct {
           })
         );
       }
+      
+      // Add Bedrock region environment variable
+      requestHandler.addEnvironment(
+        "BEDROCK_REGION",
+        props.config.bedrock.region || "us-east-1"
+      );
     }
 
     if (props.config.bedrock?.guardrails?.enabled) {
