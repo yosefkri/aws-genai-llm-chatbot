@@ -1,8 +1,9 @@
 import os
 import json
 import base64
+import re
 from decimal import Decimal
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from aws_lambda_powertools import Logger
 from genai_core.bedrock_agent import invoke_agent
@@ -32,6 +33,30 @@ class CustomJSONEncoder(json.JSONEncoder):
         elif isinstance(obj, Decimal):
             return float(obj)
         return super().default(obj)
+
+
+def extract_agent_info(model_name: str) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """
+    Extract agent ID, name, and alias ID from the model name
+    
+    Args:
+        model_name: The model name in the format "Agent_{name}_{id}"
+        
+    Returns:
+        Tuple of (agent_id, agent_name, agent_alias_id)
+    """
+    # Check if this is a specific agent or the generic "bedrock_agent"
+    if model_name == "bedrock_agent":
+        return None, None, None
+    
+    # Extract agent ID from the model name
+    match = re.search(r"Agent_(.*)_([A-Z0-9]+)$", model_name)
+    if match:
+        agent_name = match.group(1).replace('_', ' ')
+        agent_id = match.group(2)
+        return agent_id, agent_name, None
+    
+    return None, None, None
 
 
 class BedrockAgentAdapter(ModelAdapter):
@@ -78,11 +103,18 @@ class BedrockAgentAdapter(ModelAdapter):
             # Add the prompt to the chat history
             self.chat_history.add_user_message(prompt)
             
-            # Invoke the agent
+            # Process files to ensure they're in the correct format
+            processed_images = self._process_files(images) if images else None
+            processed_documents = self._process_files(documents) if documents else None
+            
+            # Invoke the agent with file support
             response = invoke_agent(
                 session_id=self.session_id,
                 prompt=prompt,
-                enable_trace=True
+                enable_trace=True,
+                images=processed_images,
+                documents=processed_documents,
+                user_id=self.user_id
             )
             
             # Extract the completion text

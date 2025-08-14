@@ -292,23 +292,25 @@ def _list_bedrock_agent_models():
         list[dict[str, Any]]: List of Bedrock agent model information dictionaries
     """
     try:
-        config = genai_core.parameters.get_config()
-        if not config.get("bedrock", {}).get("agent", {}).get("enabled", False):
-            return None
+        # Check if Bedrock agent is enabled via environment variables
+        agent_id = os.environ.get("BEDROCK_AGENT_ID")
         
-        # Only add the "agent" model, not the specific agent ID
-        return [
-            {
-                "provider": Provider.BEDROCK.value,
-                "name": "bedrock_agent",
-                "streaming": False,  # Agents don't support streaming
-                "inputModalities": [Modality.TEXT.value],
-                "outputModalities": [Modality.TEXT.value],
-                "interface": ModelInterface.LANGCHAIN.value,
-                "ragSupported": True,
-                "bedrockGuardrails": True,
-            }
-        ]
+        if agent_id:
+            # Only add the "agent" model, not the specific agent ID
+            return [
+                {
+                    "provider": Provider.BEDROCK.value,
+                    "name": "bedrock_agent",
+                    "streaming": False,  # Agents don't support streaming
+                    "inputModalities": [Modality.TEXT.value],
+                    "outputModalities": [Modality.TEXT.value],
+                    "interface": ModelInterface.LANGCHAIN.value,
+                    "ragSupported": True,
+                    "bedrockGuardrails": True,
+                    "displayName": f"Bedrock Agent: {agent_id}"
+                }
+            ]
+        return None
     except Exception as e:
         logger.error(f"Error listing Bedrock agent models: {e}")
         return None

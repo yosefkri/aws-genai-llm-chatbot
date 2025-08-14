@@ -338,6 +338,20 @@ export class ApiResolvers extends Construct {
             resources: ["*"],
           })
         );
+        
+        // Add permissions for Bedrock agent operations if agent is enabled
+        if (props.config.bedrock?.agent?.enabled) {
+          apiHandler.addToRolePolicy(
+            new iam.PolicyStatement({
+              actions: [
+                "bedrock:ListAgents",
+                "bedrock:ListAgentAliases",
+                "bedrock:InvokeAgent",
+              ],
+              resources: ["*"],
+            })
+          );
+        }
 
         if (props.config.bedrock?.roleArn) {
           apiHandler.addToRolePolicy(
