@@ -107,15 +107,27 @@ class BedrockAgentAdapter(ModelAdapter):
             processed_images = self._process_files(images) if images else None
             processed_documents = self._process_files(documents) if documents else None
             
-            # Invoke the agent with file support
-            response = invoke_agent(
-                session_id=self.session_id,
-                prompt=prompt,
-                enable_trace=True,
-                images=processed_images,
-                documents=processed_documents,
-                user_id=self.user_id
-            )
+            # Extract agent ID from model name if it's in the format "Agent_{name}_{id}"
+            agent_id, agent_name, _ = extract_agent_info(self.model_id)
+            
+            # If a specific agent ID was extracted, use invoke_agent_by_id
+            if agent_id:
+                logger.info(f"Using specific agent: {agent_name} ({agent_id})")
+                from genai_core.bedrock_agent import invoke_agent_by_id
+                response = invoke_agent_by_id(
+                    agent_id=agent_id,
+                    session_id=self.session_id,
+                    prompt=prompt,
+                    enable_trace=True
+                )
+            else:
+                # Otherwise use the default agent from environment variables
+                logger.info("Using default agent from environment variables")
+                response = invoke_agent(
+                    session_id=self.session_id,
+                    prompt=prompt,
+                    enable_trace=True
+                )
             
             # Extract the completion text
             completion = response.get("completion", "")
