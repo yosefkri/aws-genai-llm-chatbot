@@ -306,7 +306,7 @@ def _list_bedrock_agent_models():
                     "provider": Provider.BEDROCK.value,
                     "name": "bedrock_agent",
                     "streaming": False,  # Agents don't support streaming
-                    "inputModalities": [Modality.TEXT.value],
+                    "inputModalities": [Modality.TEXT.value, Modality.IMAGE.value, "DOCUMENT"],
                     "outputModalities": [Modality.TEXT.value],
                     "interface": ModelInterface.LANGCHAIN.value,
                     "ragSupported": True,
@@ -333,7 +333,7 @@ def _list_bedrock_agent_models():
                 "provider": Provider.BEDROCK.value,
                 "name": f"Agent_{agent_name.replace(' ', '_')}_{agent_id}",
                 "streaming": False,  # Agents don't support streaming
-                "inputModalities": [Modality.TEXT.value],
+                "inputModalities": [Modality.TEXT.value, Modality.IMAGE.value, "DOCUMENT"],
                 "outputModalities": [Modality.TEXT.value],
                 "interface": ModelInterface.LANGCHAIN.value,
                 "ragSupported": True,
