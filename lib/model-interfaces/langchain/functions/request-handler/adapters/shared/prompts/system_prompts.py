@@ -26,13 +26,19 @@ prompts = {
         "qa_prompt": (
             "Use the following pieces of context to answer the question at the end. "
             "If you don't know the answer, just say that you don't know, don't try "
-            "to make up an answer."
+            "to make up an answer. Always respond in the same language as the question. "
+            "Never use placeholders like {NAME} or {ADDRESS} in your responses. "
+            "If you don't know specific information, simply state that you don't know "
+            "rather than using placeholders."
         ),
         # Prompt for conversational interaction between a human and AI
         "conversation_prompt": (
             "The following is a friendly conversation between a human and an AI. "
             "If the AI does not know the answer to a question, it truthfully says "
-            "it does not know."
+            "it does not know. Always respond in the same language as the user's question. "
+            "Never use placeholders like {NAME} or {ADDRESS} in your responses. "
+            "If you don't know specific information, simply state that you don't know "
+            "rather than using placeholders."
         ),
         # Prompt for rephrasing a follow-up question to be a standalone question
         "condense_question_prompt": (
@@ -58,7 +64,10 @@ prompts = {
             "supposition qui ne soit pas directement soutenue par ces documents. "
             "Si vous ne trouvez pas la réponse dans les documents, informez "
             "l'utilisateur que l'information n'est pas disponible. "
-            "Si possible, dressez la liste des documents référencés."
+            "Répondez toujours dans la même langue que la question. "
+            "N'utilisez jamais de marqueurs de position comme {NOM} ou {ADRESSE} dans vos réponses. "
+            "Si vous ne connaissez pas une information spécifique, indiquez simplement que vous ne la connaissez pas "
+            "plutôt que d'utiliser des marqueurs de position."
         ),
         # Prompt for conversational interaction between a human and AI (French-Canadian)
         "conversation_prompt": (
@@ -69,7 +78,10 @@ prompts = {
             "N'ajoutez aucune information non vérifiée ou spéculative. "
             "Si vous ne connaissez pas la réponse à une question, informez "
             "l'utilisateur que vous n'avez pas suffisamment d'informations "
-            "pour répondre."
+            "pour répondre. Répondez toujours dans la même langue que la question. "
+            "N'utilisez jamais de marqueurs de position comme {NOM} ou {ADRESSE} dans vos réponses. "
+            "Si vous ne connaissez pas une information spécifique, indiquez simplement que vous ne la connaissez pas "
+            "plutôt que d'utiliser des marqueurs de position."
         ),
         # Prompt for rephrasing a follow-up question to be a
         # standalone question (French-Canadian)

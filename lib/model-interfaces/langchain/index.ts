@@ -116,6 +116,22 @@ export class LangChainInterface extends Construct {
         "BEDROCK_REGION",
         props.config.bedrock.region || "us-east-1"
       );
+      
+      // Add Tavily API key secret ARN for web search capability
+      if (props.config.bedrock.tavilyApiKeySecretArn) {
+        requestHandler.addEnvironment(
+          "TAVILY_API_KEY_SECRET_ARN",
+          props.config.bedrock.tavilyApiKeySecretArn
+        );
+        
+        // Grant permission to read the Tavily API key secret
+        requestHandler.addToRolePolicy(
+          new iam.PolicyStatement({
+            actions: ["secretsmanager:GetSecretValue"],
+            resources: [props.config.bedrock.tavilyApiKeySecretArn],
+          })
+        );
+      }
     }
 
     if (props.config.bedrock?.guardrails?.enabled) {

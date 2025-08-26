@@ -115,6 +115,7 @@ export interface SystemConfig {
     region?: SupportedRegion;
     endpointUrl?: string;
     roleArn?: string;
+    tavilyApiKeySecretArn?: string;
     guardrails?: {
       enabled: boolean;
       identifier: string;
